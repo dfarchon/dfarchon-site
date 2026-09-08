@@ -283,6 +283,10 @@ export default function AsciiBackground() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
     const FONT_SIZE = 14;
     const CHAR_W = FONT_SIZE * 0.62;
     const CHAR_H = FONT_SIZE * 1.05;
@@ -308,9 +312,12 @@ export default function AsciiBackground() {
     let lastSpawnX = -999;
     let lastSpawnY = -999;
     let stepCount = 0;
+    let started = false;
 
     function resize() {
-      const dpr = window.devicePixelRatio || 1;
+      // A high-DPI canvas is needlessly expensive for a deliberately pixelated
+      // text texture. Capping it also avoids a large allocation during startup.
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       w = window.innerWidth;
       h = window.innerHeight;
       canvas!.width = w * dpr;
@@ -479,11 +486,6 @@ export default function AsciiBackground() {
       mouseRef.current.y = e.clientY;
     }
 
-    window.addEventListener("mousemove", onMouseMove);
-    resize();
-    seed();
-    window.addEventListener("resize", resize);
-
     function draw(time: number) {
       if (time - lastSimTime > SIM_INTERVAL) {
         spawnAtMouse();
@@ -570,15 +572,45 @@ export default function AsciiBackground() {
         }
       }
 
-      animId = requestAnimationFrame(draw);
+      if (!reducedMotion && !document.hidden) {
+        animId = requestAnimationFrame(draw);
+      }
     }
 
-    animId = requestAnimationFrame(draw);
+    function start() {
+      if (started) return;
+      started = true;
+      resize();
+      seed();
+      window.addEventListener("mousemove", onMouseMove);
+      window.addEventListener("resize", resize);
+      // Paint the initial background once. Motion starts only after the page
+      // content has had an opportunity to reach the screen.
+      draw(performance.now());
+    }
+
+    function onVisibilityChange() {
+      if (document.hidden) {
+        cancelAnimationFrame(animId);
+      } else if (started && !reducedMotion) {
+        lastSimTime = performance.now();
+        animId = requestAnimationFrame(draw);
+      }
+    }
+
+    document.addEventListener("visibilitychange", onVisibilityChange);
+    let startFrame = 0;
+    const paintFrame = requestAnimationFrame(() => {
+      startFrame = requestAnimationFrame(start);
+    });
 
     return () => {
+      cancelAnimationFrame(paintFrame);
+      cancelAnimationFrame(startFrame);
       cancelAnimationFrame(animId);
       window.removeEventListener("resize", resize);
       window.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
     };
   }, []);
 
