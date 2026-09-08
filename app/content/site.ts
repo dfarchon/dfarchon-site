@@ -19,40 +19,37 @@ export interface SocialLink {
 export const siteContent = {
   brand: {
     name: "DFArchon",
-    displayName: "DFARCHON",
+    displayName: "DFArchon",
     foundedYear: 2021,
     intro:
-      "DFArchon is a community dedicated to the pursuit of onchain reality, composed of enthusiasts passionate about emerging technologies.",
+      "DFArchon researches technologies for Selective Presence. We enable people to participate, create, and coordinate without surrendering identity, attention, or private life.",
   },
   hero: {
-    titleLines: ["DIGITAL", "FRONTIER", "ARCHON"],
-    tvMessage: "NICE TO MEET YOU",
-    visionTitle: "OUR VISION",
-    visionStatements: [
-      "We hope to build self-sovereign digital worlds.",
-      "We value decentralization and privacy.",
-    ],
-    statusTitle: "ACTIVE SINCE 2021",
-    statusItems: [
-      "10 Dark Forest community rounds hosted",
-      "Active in fully onchain gaming ecosystem",
-      "Track the latest cutting-edge technologies",
+    title: "Participate without becoming fully visible.",
+    principles: [
+      {
+        title: "Verifiable Participation",
+        description:
+          "Create, collaborate, and act in public worlds whose rules and outcomes anyone can verify.",
+      },
+      {
+        title: "Minimum Disclosure",
+        description:
+          "Reveal only what an action requires. Participation should not demand a complete identity or history.",
+      },
+      {
+        title: "Credible Exit",
+        description:
+          "Keep the ability to move identities, data, assets, and clients without asking a platform for permission.",
+      },
     ],
   },
   footer: {
-    marqueeText:
-      "FULLY ONCHAIN GAMES — DARK FOREST LIVES — ZK FOG OF WAR — ONCHAIN REALITY — DECENTRALIZATION - PRIVACY — COMMUNITY OWNED — NO OFF-SWITCH — ",
     socialLinks: [
       { label: "TWITTER", href: "https://x.com/DFArchon" },
       { label: "GITHUB", href: "https://github.com/dfarchon" },
       { label: "BLOG", href: "https://paragraph.com/@dfarchon" },
     ] satisfies SocialLink[],
-    systemLogs: [
-      "[00:00:01] DFARCHON_HUB_INITIALIZED",
-      "[00:00:05] CONNECTING TO DIGITAL WORLD ...",
-      "[00:00:12] SYNCING BLOCKCHAIN [OK]",
-      "[00:00:15] ONCHAIN_REALITY: ACTIVE",
-    ],
   },
   seo: {
     defaultKeywords: [
@@ -72,30 +69,46 @@ export const siteContent = {
     home: {
       title: "DFArchon | About",
       description:
-        "Learn about DFArchon, a community exploring onchain reality through Dark Forest, fully onchain games, and emerging decentralized technologies.",
+        "DFArchon researches technologies for Selective Presence: the ability to participate, create, and coordinate without surrendering identity, attention, or private life.",
       path: "/",
-      keywords: ["DFArchon about", "Dark Forest community", "onchain research collective"],
+      keywords: [
+        "DFArchon about",
+        "Dark Forest community",
+        "onchain research collective",
+      ],
     },
     projects: {
       title: "DFArchon | Projects",
       description:
         "Explore DFArchon projects spanning Dark Forest experiments, community rounds, and fully onchain game infrastructure.",
       path: "/projects",
-      keywords: ["DFArchon projects", "Dark Forest tools", "fully onchain game projects"],
+      keywords: [
+        "DFArchon projects",
+        "Dark Forest tools",
+        "fully onchain game projects",
+      ],
     },
     team: {
       title: "DFArchon | Team",
       description:
         "Meet the DFArchon contributors building community rounds, experimental systems, and onchain gaming experiences.",
       path: "/team",
-      keywords: ["DFArchon team", "onchain builders", "Dark Forest contributors"],
+      keywords: [
+        "DFArchon team",
+        "onchain builders",
+        "Dark Forest contributors",
+      ],
     },
     timeline: {
       title: "DFArchon | Timeline",
       description:
         "Follow the DFArchon timeline from early Dark Forest plugins to public community rounds, MUD migration, and onchain game releases.",
       path: "/timeline",
-      keywords: ["DFArchon timeline", "Dark Forest history", "onchain gaming roadmap"],
+      keywords: [
+        "DFArchon timeline",
+        "Dark Forest history",
+        "onchain gaming roadmap",
+      ],
     },
     writings: {
       title: "DFArchon | Writings",
@@ -108,7 +121,10 @@ export const siteContent = {
 } as const;
 
 export function getPageMetaDescriptors(page: PageMeta) {
-  const keywords = [...siteContent.seo.defaultKeywords, ...(page.keywords ?? [])].join(", ");
+  const keywords = [
+    ...siteContent.seo.defaultKeywords,
+    ...(page.keywords ?? []),
+  ].join(", ");
 
   return [
     { title: page.title },

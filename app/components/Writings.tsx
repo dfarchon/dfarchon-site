@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { writingsContent, type WritingEntry } from "../content/writings";
 
@@ -9,46 +9,59 @@ function ArticleModal({
   entry: WritingEntry;
   onClose: () => void;
 }) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
     };
-    document.addEventListener("keydown", handleEsc);
-    return () => document.removeEventListener("keydown", handleEsc);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClose]);
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
+      className="modal-backdrop"
+      onMouseDown={(event) => event.target === event.currentTarget && onClose()}
     >
-      <div className="relative h-[92vh] w-[calc(100vw-1rem)] border-4 border-black bg-white sm:h-[90vh] sm:w-[95vw]">
-        <div className="flex items-center justify-between gap-3 border-b-4 border-black bg-black px-3 py-2 text-white sm:px-4">
-          <div className="mr-4 truncate text-sm font-bold">{entry.title}</div>
-          <div className="flex shrink-0 items-center gap-3">
+      <div
+        className="article-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="article-modal-title"
+      >
+        <div className="modal-header">
+          <div className="modal-title" id="article-modal-title">
+            {entry.title}
+          </div>
+          <div className="modal-actions">
             <a
               href={entry.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="font-mono text-xs text-green-400 hover:underline"
+              className="quiet-link"
             >
-              OPEN_EXTERNAL
+              Open article ↗
             </a>
             <button
+              ref={closeButtonRef}
+              type="button"
               onClick={onClose}
-              className="text-xl leading-none font-bold text-white transition-colors hover:text-pink-500"
+              className="modal-close"
+              aria-label="Close article"
             >
-              &times;
+              ×
             </button>
           </div>
         </div>
-
         <iframe
           src={entry.url}
-          className="w-full border-0"
-          style={{ height: "calc(100% - 52px)" }}
+          className="article-frame"
           title={entry.title}
           sandbox="allow-scripts allow-same-origin allow-popups"
         />
@@ -60,54 +73,43 @@ function ArticleModal({
 
 export default function Writings() {
   const [activeEntry, setActiveEntry] = useState<WritingEntry | null>(null);
-
-  const openEntry = useCallback((entry: WritingEntry) => {
-    setActiveEntry((prev) => (prev ? prev : entry));
-  }, []);
+  const openEntry = useCallback(
+    (entry: WritingEntry) => setActiveEntry((current) => current ?? entry),
+    []
+  );
 
   return (
-    <section
-      id="writings"
-      className="relative mx-auto max-w-[24rem] overflow-hidden border-4 border-black bg-pink-500 p-4 sm:max-w-none sm:p-6 md:p-8"
-    >
-      <div className="absolute top-0 right-0 p-3 text-5xl font-black italic opacity-10 sm:p-4 sm:text-7xl md:text-8xl">
-        ONCHAIN
-      </div>
-
-      <h2
-        className="mb-8 text-3xl font-bold uppercase sm:text-4xl md:text-5xl"
-        style={{
-          fontFamily: "'Space Grotesk', sans-serif",
-          color: "black",
-          textShadow: "3px 3px 0px rgba(0,0,0,0.3)",
-        }}
-      >
-        {writingsContent.title}
-      </h2>
-
-      <div className="relative z-10 space-y-4">
+    <section id="writings">
+      <header className="section-head section-head-text">
+        <div>
+          <div className="eyebrow">Ideas and practice</div>
+          <h1 className="page-title">{writingsContent.title}</h1>
+          <p className="page-intro">
+            Notes from building verifiable worlds and exploring privacy,
+            coordination, and onchain reality.
+          </p>
+        </div>
+      </header>
+      <div className="writing-list">
         {writingsContent.entries.map((entry) => (
           <button
             key={entry.number}
+            type="button"
             onClick={() => openEntry(entry)}
-            className="group mx-auto flex w-full max-w-[22rem] cursor-pointer flex-col items-start gap-2 border-4 border-black bg-white p-4 text-left text-black transition-colors hover:bg-black hover:text-white sm:max-w-none sm:flex-row sm:items-center sm:justify-between"
+            className="writing-row"
           >
-            <div className="font-bold">
-              {entry.number} {entry.title}
-            </div>
-            <div className="font-mono text-xs group-hover:text-green-400">
-              {entry.date}
-            </div>
+            <span className="writing-number">{entry.number}</span>
+            <span className="writing-title">{entry.title}</span>
+            <span className="writing-date">{entry.date.replace("_", " ")}</span>
           </button>
         ))}
       </div>
-
-      {activeEntry && (
+      {activeEntry ? (
         <ArticleModal
           entry={activeEntry}
           onClose={() => setActiveEntry(null)}
         />
-      )}
+      ) : null}
     </section>
   );
 }

@@ -6,7 +6,7 @@ Store editable site information in this directory so components can stay focused
 
 - `site.ts`: Shared brand copy, footer links, marquee text, and page meta.
 - `team.ts`: Team section title, summary, and member list.
-- `projects.ts`: Project list and lightweight showcase metadata.
+- `projects.ts`: Project list and external destinations.
 - `timeline.ts`: Timeline title, legend categories, and event list.
 - `writings.ts`: Writing entries and external article links.
 
@@ -29,7 +29,7 @@ Add a project:
 
 1. Open `projects.ts`.
 2. Append one object to `items`.
-3. Fill in `slug`, `title`, `description`, `status`, `url`, and `showcase`.
+3. Fill in `slug`, `title`, `description`, `status`, and `url`.
 
 Add a timeline event:
 

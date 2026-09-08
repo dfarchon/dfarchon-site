@@ -3,7 +3,6 @@ export type TimelineCategory = "launch" | "milestone" | "community";
 export interface TimelineCategoryDefinition {
   key: TimelineCategory;
   label: string;
-  color: string;
   shape: "diamond" | "circle" | "circle-outline";
 }
 
@@ -19,17 +18,15 @@ export const timelineContent = {
   intro:
     "From Dark Forest players to builders of community rounds, advancing toward the Onchain Reality Universe.",
   categories: [
-    { key: "launch", label: "LAUNCH", color: "bg-white", shape: "diamond" },
+    { key: "launch", label: "LAUNCH", shape: "diamond" },
     {
       key: "milestone",
       label: "MILESTONE",
-      color: "bg-white",
       shape: "circle",
     },
     {
       key: "community",
       label: "COMMUNITY",
-      color: "border-white border-2 bg-transparent",
       shape: "circle-outline",
     },
   ] satisfies TimelineCategoryDefinition[],

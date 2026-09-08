@@ -10,7 +10,7 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function ProjectsPage() {
   return (
-    <SiteChrome mainClassName="mx-auto max-w-7xl py-12">
+    <SiteChrome mainClassName="site-container page-main">
       <Projects />
     </SiteChrome>
   );

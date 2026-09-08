@@ -12,31 +12,29 @@ export default function Navbar() {
   const location = useLocation();
 
   return (
-    <nav className="relative z-10 mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-3">
-      <Link
-        to="/"
-        prefetch="intent"
-        className="brand-link inline-flex w-full items-center justify-center px-4 py-3 text-lg leading-none font-bold uppercase italic no-underline sm:mr-3 sm:w-auto sm:px-5 sm:text-xl"
-      >
-        <span className="brand-link-label">DFArchon</span>
-      </Link>
+    <header className="site-header site-container">
+      <nav className="site-nav" aria-label="Primary navigation">
+        <Link to="/" prefetch="intent" className="wordmark">
+          DFArchon
+        </Link>
+        <div className="nav-items">
+          {NAV_ITEMS.map((item) => {
+            const isActive = location.pathname === item.href;
 
-      <div className="grid w-full grid-cols-2 gap-3 sm:flex sm:w-auto sm:flex-wrap">
-        {NAV_ITEMS.map((item) => {
-          const isActive = location.pathname === item.href;
-
-          return (
-            <Link
-              key={item.href}
-              to={item.href}
-              prefetch="intent"
-              className={`nav-link w-full text-sm sm:w-36 sm:text-base ${isActive ? "nav-link-active" : ""}`}
-            >
-              <span className="nav-link-shape">{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                prefetch="intent"
+                className={`nav-link ${isActive ? "nav-link-active" : ""}`}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+    </header>
   );
 }

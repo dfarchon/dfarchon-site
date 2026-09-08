@@ -9,7 +9,7 @@ export function meta(_args: Route.MetaArgs) {
 
 export default function TimelinePage() {
   return (
-    <SiteChrome mainClassName="mx-auto max-w-5xl py-12">
+    <SiteChrome mainClassName="site-container page-main">
       <Timeline />
     </SiteChrome>
   );

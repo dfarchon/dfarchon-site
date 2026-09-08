@@ -10,6 +10,7 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import AsciiBackground from "./components/AsciiBackground";
 import { getPageMetaDescriptors, siteContent } from "./content/site";
 
 export const links: Route.LinksFunction = () => [
@@ -22,7 +23,7 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap",
+    href: "https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap",
   },
 ];
 
@@ -71,7 +72,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         />
       </head>
       <body>
-        <div id="app-shell">{children}</div>
+        <div id="app-shell">
+          <AsciiBackground />
+          <div className="site-content">{children}</div>
+        </div>
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -100,7 +104,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
+    <main className="site-container page-main">
       <h1>{message}</h1>
       <p>{details}</p>
       {stack && (

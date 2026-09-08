@@ -60,7 +60,12 @@ async function readDotEnvSiteUrl() {
       return normalizeSiteUrl(parseDotEnvValue(value));
     }
   } catch (error) {
-    if (error && typeof error === "object" && "code" in error && error.code === "ENOENT") {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
       return null;
     }
 
@@ -78,7 +83,7 @@ async function resolveSiteUrl() {
         process.env.DEPLOY_PRIME_URL ??
         process.env.DEPLOY_URL ??
         process.env.VERCEL_PROJECT_PRODUCTION_URL ??
-        process.env.VERCEL_URL,
+        process.env.VERCEL_URL
     ) ?? (await readDotEnvSiteUrl())
   );
 }
@@ -89,7 +94,9 @@ async function main() {
   const siteUrl = (await resolveSiteUrl()) ?? "https://example.com";
 
   if (siteUrl === "https://example.com") {
-    console.warn("generate-seo-files: SITE_URL is not set, using https://example.com");
+    console.warn(
+      "generate-seo-files: SITE_URL is not set, using https://example.com"
+    );
   }
 
   const robotsBody = `User-agent: *
@@ -108,7 +115,9 @@ ${paths.map((routePath) => `  <url><loc>${new URL(routePath, `${siteUrl}/`).toSt
   await writeFile(path.join(outputDir, "robots.txt"), robotsBody);
   await writeFile(path.join(outputDir, "sitemap.xml"), sitemapBody);
 
-  console.log(`generate-seo-files: wrote robots.txt and sitemap.xml to ${outputDir}`);
+  console.log(
+    `generate-seo-files: wrote robots.txt and sitemap.xml to ${outputDir}`
+  );
 }
 
 await main();

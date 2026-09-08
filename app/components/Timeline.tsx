@@ -1,82 +1,51 @@
 import { timelineContent, type TimelineCategory } from "../content/timeline";
 
 function CategoryMarker({ category }: { category: TimelineCategory }) {
-  const cat = timelineContent.categories.find(
+  const definition = timelineContent.categories.find(
     (entry) => entry.key === category
   )!;
-  if (cat.shape === "diamond") {
-    return <div className={`h-3 w-3 ${cat.color} shrink-0 rotate-45`} />;
-  }
-  if (cat.shape === "circle-outline") {
-    return (
-      <div className="h-3 w-3 shrink-0 rounded-full border-2 border-white" />
-    );
-  }
-  return <div className={`h-3 w-3 rounded-full ${cat.color} shrink-0`} />;
+  return (
+    <span
+      className="timeline-marker"
+      data-shape={definition.shape}
+      aria-hidden="true"
+    />
+  );
 }
 
 export default function Timeline() {
   return (
-    <div>
-      <h1
-        className="mb-6 text-4xl font-bold tracking-[0.12em] uppercase sm:text-5xl md:text-7xl"
-        style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-      >
-        {timelineContent.title}
-      </h1>
-      <p className="mb-10 max-w-2xl text-sm text-gray-400 md:text-base">
-        {timelineContent.intro}
-      </p>
-
-      {/* Category legend */}
-      <div className="mb-10 flex flex-wrap gap-4 sm:mb-12 sm:gap-6">
-        {timelineContent.categories.map((cat) => (
-          <div
-            key={cat.key}
-            className="flex items-center gap-2 text-xs tracking-wide uppercase"
-          >
-            <CategoryMarker category={cat.key} />
-            <span className="text-gray-300">{cat.label}</span>
+    <section>
+      <div className="timeline-overview">
+        <header className="section-head section-head-text">
+          <div>
+            <div className="eyebrow">History</div>
+            <h1 className="page-title">{timelineContent.title}</h1>
+            <p className="page-intro">{timelineContent.intro}</p>
           </div>
-        ))}
-      </div>
-
-      {/* Timeline */}
-      <div className="mx-auto max-w-[24rem] border-4 border-gray-800 bg-gray-950 p-4 sm:max-w-none sm:p-6 md:p-10">
-        <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute top-0 bottom-0 left-[5px] w-[2px] bg-gray-700" />
-
-          <div className="space-y-10 sm:space-y-12">
-            {timelineContent.events.map((event, i) => (
-              <div key={i} className="relative pl-8 sm:pl-10">
-                {/* Marker */}
-                <div className="absolute top-1 left-0">
-                  <CategoryMarker category={event.category} />
-                </div>
-
-                {/* Date */}
-                <div className="mb-2 inline-block border-b border-gray-800 pb-2 font-mono text-xs text-green-400">
-                  {event.date}
-                </div>
-
-                {/* Title */}
-                <h3
-                  className="mb-2 text-lg font-bold text-white sm:text-xl md:text-2xl"
-                  style={{ fontFamily: "'Space Grotesk', sans-serif" }}
-                >
-                  {event.title}
-                </h3>
-
-                {/* Description */}
-                <p className="max-w-2xl text-sm leading-relaxed text-gray-400">
-                  {event.description}
-                </p>
-              </div>
-            ))}
-          </div>
+        </header>
+        <div className="timeline-legend" aria-label="Timeline categories">
+          {timelineContent.categories.map((category) => (
+            <div className="legend-item" key={category.key}>
+              <CategoryMarker category={category.key} />
+              {category.label}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+      <div className="timeline-list">
+        {timelineContent.events.map((event) => (
+          <article
+            className="timeline-event"
+            key={`${event.date}-${event.title}`}
+          >
+            <CategoryMarker category={event.category} />
+            <div className="event-date">{event.date}</div>
+            <h2>{event.title}</h2>
+            <p>{event.description}</p>
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
