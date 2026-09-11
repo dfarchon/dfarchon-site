@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
   useLocation,
 } from "react-router";
+import { useEffect } from "react";
 
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -88,6 +89,10 @@ export default function App() {
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+  useEffect(() => {
+    console.error("Unhandled route error", error);
+  }, [error]);
+
   let message = "Oops!";
   let details = "An unexpected error occurred.";
   let stack: string | undefined;
