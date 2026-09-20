@@ -1,10 +1,8 @@
-import type { Route } from "./+types/team";
-
 import SiteChrome from "../components/SiteChrome";
 import Team from "../components/Team";
 import { getPageMetaDescriptors, siteContent } from "../content/site";
 
-export function meta(_args: Route.MetaArgs) {
+export function meta() {
   return getPageMetaDescriptors(siteContent.pageMeta.team);
 }
 

@@ -22,7 +22,11 @@ function normalizeSiteUrl(value) {
 }
 
 function extractPaths(source) {
-  return [...source.matchAll(/path:\s*"([^"]+)"/g)].map((match) => match[1]);
+  const hiddenPaths = new Set(["/team"]);
+
+  return [...source.matchAll(/path:\s*"([^"]+)"/g)]
+    .map((match) => match[1])
+    .filter((routePath) => !hiddenPaths.has(routePath));
 }
 
 function parseDotEnvValue(value) {
